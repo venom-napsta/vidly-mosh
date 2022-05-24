@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import MoviesForm from './components/movieForm';
 
 import './App.css';
+import loginForm from './components/loginForm';
 
 export default class App extends Component {
   render() {
@@ -20,6 +21,7 @@ export default class App extends Component {
         <main className='App'>
           <div className='container'>
             <Switch>
+              <Route path="/login" component={loginForm}></Route>
               <Route path="/movies/:id" component={MoviesForm}></Route>
               <Route path="/movies" component={Movies}></Route>
               <Route path="/customers" component={Customers}></Route>
@@ -53,3 +55,19 @@ ul>li>button.btn.btn-primary*3
     <button className="btn btn-primary">btn2</button>
     <button className="btn btn-primary">btn3</button></li>
 </ul> */
+
+// Super Emmet
+
+// say we want to wrap an element with a div
+// 1. Select Text/element
+// 2. Press Ctrl + Shift + P
+// 3. Search for 'wrap with abbreviation'
+// 4. Type 'div.container' for eg. (Emmet it)
+
+// Multiple Cursor
+// 1. select the first filed
+// 2. Press CTRL
+// 3. Select The other fields
+
+// Renaming Variables
+// (currentName: newName)

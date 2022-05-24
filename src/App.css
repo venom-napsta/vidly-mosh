@@ -54,3 +54,10 @@
   height: 8vh;
   color: aliceblue;
 }
+.login-form{
+  width: 400px;
+  margin-top: 30px;
+  margin-left: 30%;
+  align-items: center;
+  justify-content: center;
+}
