@@ -1,38 +1,59 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import userAuth from "../services/authService";
 // import TableHeader from "./common/TableHeader";
 // import TableBody from "./common/TableBody";
-import Like from './common/Like';
-import TableComponent from './common/TableComponent';
+import Like from "./common/Like";
+import TableComponent from "./common/TableComponent";
 
 export class MoviesTable extends Component {
-
-    // improving the thead below for reusability <TableHeader/>
-    columns = [
-        { path: 'title', label: 'Title', content:movie => <Link to={`/movies/${movie._id}`}>{movie.title}</Link> },
-        { path: 'genre.name', label: 'Genre' },
-        { path: 'numberInStock', label: 'Stock' },
-        { path: 'dailyRentalRate', label: 'Rate' },
-        { key: 'like', content: movie => <Like liked={movie.liked} onClick={() => this.props.onLike(movie)} /> },
-        { key: 'delete', content: movie => 
-            < button onClick = {() => this.props.onDelete(movie)} > 
-                <i className="fa fa-remove"></i>
-            </button > 
-        }
-    ]
-render() {
-    const { movies, /* onDelete, onLike */  onSort, sortColumn } = this.props
+  // improving the thead below for reusability <TableHeader/>
+  columns = [
+    {
+      path: "title",
+      label: "Title",
+      content: (movie) => (
+        <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+      ),
+    },
+    { path: "genre.name", label: "Genre" },
+    { path: "numberInStock", label: "Stock" },
+    { path: "dailyRentalRate", label: "Rate" },
+    {
+      key: "like",
+      content: (movie) => (
+        <Like liked={movie.liked} onClick={() => this.props.onLike(movie)} />
+      ),
+    },
+  ];
+  deleteCol = {
+    key: "delete",
+    content: (movie) =>
+      userAuth.getCurrentUser() && (
+        <button onClick={() => this.props.onDelete(movie)}>
+          <i className="fa fa-remove"></i>
+        </button>
+      ),
+  };
+  constructor() {
+    super();
+    const user = userAuth.getCurrentUser();
+    if (user && user.isAdmin) this.columns.push(this.deleteCol);
+  }
+  render() {
+    const { movies, /* onDelete, onLike */ onSort, sortColumn } = this.props;
     return (
-        <TableComponent columns={this.columns} data={movies} sortColumn={sortColumn} onSort={onSort} />
-    )
+      <TableComponent
+        columns={this.columns}
+        data={movies}
+        sortColumn={sortColumn}
+        onSort={onSort}
+      />
+    );
+  }
 }
-}
 
-export default MoviesTable
-
-
-
-
+export default MoviesTable;
 
 /* <thead>
     <tr>
@@ -44,8 +65,6 @@ export default MoviesTable
         <th></th>
     </tr>
 </thead> */
-
-
 
 /* <tbody>
             {

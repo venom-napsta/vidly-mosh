@@ -1,104 +1,58 @@
-import React, { Component } from 'react'
-import Input from './common/input';
+import React from "react";
+import Joi from "joi-browser";
+import { Redirect } from "react-router-dom";
 
-export default class loginForm extends Component {
+import auth from "../services/authService";
+import Form from "./common/Form";
 
+export default class loginForm extends Form {
   state = {
-    account:{
-      username: '',
-      password: ''
+    data: {
+      username: "",
+      password: "",
     },
 
-    errors: {}
+    errors: {},
   };
 
-  validate = () => {
-    const errors = {};
+  schema = {
+    username: Joi.string().required().label("Username"),
+    password: Joi.string().required().label("Password"),
+  };
 
-    const { account } = this.state;
-    if (account.username.trim() === '')
-      errors.username = 'Username is Required'
-    if (account.password.trim() === '')
-      errors.password = 'Password is Required'
-    
-    return Object.keys(errors).length === 0 ? null : errors;
-  }
+  doSubmit = async () => {
+    // Call server
+    try {
+      const { data } = this.state;
+      await auth.login(data.username, data.password);
 
-  handleSubmit = e => {
-    e.preventDefault();
-
-    // error handling
-    const errors = this.validate();
-    this.setState({ errors:errors || {} });
-    if(errors) return;
-
-    // Call the server
-
-    console.log('Submitted');
-  }
-
-  validateProperty = input =>{
-    const { name, value } = input
-    if(name === 'username'){
-      if(value.trim() === '' ) return 'Username is required.';
+      const { state } = this.props.location;
+      window.location = state ? state.from.pathname : "/";
+      // this.props.history.push('/')
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        // clone err object
+        const errors = { ...this.state.errors };
+        // set new error
+        errors.username = error.response.data;
+        // update the state on new error
+        this.setState({ errors });
+      }
     }
-    if(name === 'password'){
-      if(value.trim() === '' ) return 'Password is required.';
-    }
-
-  }
-  handleChange = ({currentTarget:input}) => {
-    // handleChange = e => {
-
-    const errors = { ...this.state.errors };
-    const errorMessage = this.validateProperty(input);
-    if(errorMessage) errors[input.name] = errorMessage;
-    else delete errors[input.name]
-    
-    const account = { ...this.state.account };
-    account[input.name] = input.value;
-
-    // account[e.currentTarget.name] = e.currentTarget.value; // to accept multiple inputs dynamically
-    // account.username = e.currentTarget.value; to accept 1 input
-    this.setState({account, errors })
-  }
-
+  };
 
   render() {
-    const { account, errors } = this.state;
+    // we used redirect coz theres no need to remount the state
+    if (auth.getCurrentUser()) return <Redirect to="/" />;
     return (
       <div>
         <h1>Login</h1>
-        <form className='login-form' onSubmit={this.handleSubmit} >
-          <Input
-            name='username' 
-            value={account.username}
-            label='Username or Email'
-            onChange={this.handleChange}
-            error={errors.username}
-          />
-          <Input
-            name='password' 
-            value={account.password}
-            label='Password'
-            onChange={this.handleChange}
-            error={errors.password}
-          />
-          {/* Refactored to a usable component Input
-          <div className="form-group">
-            <label htmlFor="Password">Password</label>
-            <input 
-              name='password'
-              onChange={this.handleChange}
-              value={password} 
-              id='Password' 
-              type="password" 
-              className="form-control" 
-            />
-          </div> */}
-          <button className='btn btn-primary' >Login</button>
+        <form className="login-form" onSubmit={this.handleSubmit}>
+          {this.renderInput("username", "Username")}
+          {this.renderInput("password", "Password", "password")}
+          {this.renderButton("Login")}
         </form>
       </div>
-    )
+    );
   }
 }

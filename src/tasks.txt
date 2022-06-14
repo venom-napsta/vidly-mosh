@@ -1,0 +1,8 @@
+create link using  rrd
+create new movie link in home component
+That opnes a form for creating a new movie
+Saves and insert movie to the movie list
+Allows user to edit
+and clear form after sub
+
+make the del movie 

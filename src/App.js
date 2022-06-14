@@ -1,50 +1,74 @@
-import React, { Component } from 'react'
-import { Route, Redirect, Switch } from 'react-router-dom'
+import React, { Component } from "react";
+import { Route, Redirect, Switch } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 // import Categories from './components/Categories';
-import Movies from './components/Movies';
-import Customers from './components/Customers';
-import Rentals from './components/Rentals';
-import NotFound from './components/NotFound';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import MoviesForm from './components/movieForm';
+import Movies from "./components/Movies";
+import Customers from "./components/Customers";
+import Rentals from "./components/Rentals";
+import NotFound from "./components/NotFound";
+import Navbar from "./components/Navbar";
+// import Footer from './components/Footer';
+import MoviesForm from "./components/movieForm";
+import loginForm from "./components/loginForm";
+import Register from "./components/Register";
+import Logout from "./components/Logout";
 
-import './App.css';
-import loginForm from './components/loginForm';
+import auth from "./services/authService";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+
+import "react-toastify/dist/ReactToastify.css";
+import "./App.css";
 
 export default class App extends Component {
+  state = {};
+
+  componentDidMount() {
+    const user = auth.getCurrentUser();
+    this.setState({ user });
+  }
   render() {
+    const { user } = this.state;
     return (
       <React.Fragment>
-        <Navbar />
-        <main className='App'>
-          <div className='container'>
+        <ToastContainer />
+        <Navbar user={user} />
+        <main className="App">
+          <div className="container">
             <Switch>
-              <Route path="/login" component={loginForm}></Route>
-              <Route path="/movies/:id" component={MoviesForm}></Route>
-              <Route path="/movies" component={Movies}></Route>
-              <Route path="/customers" component={Customers}></Route>
-              <Route path="/rentals" component={Rentals}></Route>
-              <Route path="/not-found" component={NotFound}></Route>
-              <Redirect exact from='/' to='/movies' />
-              <Redirect to='/not-found' />
+              <Route path="/login" component={loginForm} />
+              <Route path="/logout" component={Logout} />
+              <Route path="/register" component={Register} />
+
+              <ProtectedRoute path="/movies/:id" component={MoviesForm} />
+
+              {/* <Route path="/movies" component={Movies}/> */}
+              <Route
+                path="/movies"
+                // props incl history, params, match...
+                render={(props) => <Movies {...props} user={user} />}
+              />
+              <Route path="/customers" component={Customers} />
+              <Route path="/rentals" component={Rentals} />
+              <Route path="/not-found" component={NotFound} />
+              <Redirect exact from="/" to="/movies" />
+              <Redirect to="/not-found" />
             </Switch>
           </div>
         </main>
-        <Footer />
+        {/* <Footer /> */}
       </React.Fragment>
-    )
+    );
   }
 }
 
 /* // Emmet Zen Coding
 Route[path][component]*4
 // Result
-<Route path="" component=""></Route>
-<Route path="" component=""></Route>
-<Route path="" component=""></Route>
-<Route path="" component=""></Route> */
+<Route path="" component=""/>
+<Route path="" component=""/>
+<Route path="" component=""/>
+<Route path="" component=""/> */
 
 /* // General Emmet
 ul>li>button.btn.btn-primary*3
@@ -71,3 +95,5 @@ ul>li>button.btn.btn-primary*3
 
 // Renaming Variables
 // (currentName: newName)
+// Read as get the data property and rename it to movie
+// const {data: movie} = getMovie(movieId);

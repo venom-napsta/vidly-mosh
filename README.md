@@ -1,7 +1,10 @@
-npm i lodash@4.17.10
-rrd@4.3.1
-query-string@6.1.0
+create acc
+create proj
+npm i raven-js@3.26.4
+npm i react-toastify@4.1
 
+clone vidly backend
+github.com/mosh-hamedani/vidly-api-node
 
 # Getting Started with Create React App
 

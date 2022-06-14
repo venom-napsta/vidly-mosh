@@ -47,13 +47,13 @@
   width: 10rem;
   /* margin-top: 5r; */
 }
-.footer{
+/* .footer{
   margin-top: calc(100% - 40vh);
   background-color: #282c34;
   text-align: center;
   height: 8vh;
   color: aliceblue;
-}
+} */
 .login-form{
   width: 400px;
   margin-top: 30px;
